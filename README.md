@@ -1,10 +1,7 @@
 # cli-tricks
 Linux cli tricks and tips
 
-
-# CLI tricks
-
-Often in our daily work we encounter the need to run stuff in CLI - and too often this proves to be trickier than one would expect. In the spirit of saving time for others, we've decided to compile a list of the ones we've found to be useful and not-so-obvious.
+A few things that have been found that make life a bit easier to the cli user
 
 - [grep](#grep-tricks)
 - [awk](#awk-tricks)
@@ -13,11 +10,9 @@ Often in our daily work we encounter the need to run stuff in CLI - and too ofte
 - [bash](#bash-tricks)
 - [regex](#regex-tricks)
 - [tcpdump](#tcpdump)
-- [BackBox](#backbox-specific)
 - [Check Point](#check-point-tricks)
 - [Misc](#miscellaneous)
   - [Bash-Essentials](#bash-essentials)
-  - [Emoji](#emoji)
 
 ## grep Tricks
 
@@ -767,14 +762,6 @@ tcpdump -s 500
 tcpdump -s 0
 ```
 
-## BackBox Specific
-
-### Send a mail from BackBox CLI
-
-```bash
-/backbox/backbox-3.0/bin/sendEmail -f alerts@backbox.co -t SENDER@backbox.co -s SMTP_ADDRESS -u MailTest -o message-file=
-```
-
 ## Check Point Tricks
 
 ### Check Point license expiration
@@ -794,111 +781,6 @@ echo -e "printxml <table_name> <object_name>\n-q\n" | dbedit -local
 
 ```bash
 fw="xxx"; cpmiquerybin object "" network_objects "name='$fw'" |grep anti_spoof
-```
-
-### Print cluster names and IP(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "" network_objects "type='gateway_cluster'" -a __name__,ipaddr
-```
-
-### Print a list of names of all objects of type cluster member(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "" network_objects "type='cluster_member'" -a __name__
-```
-
-### Print a list of names of all valid cluster members from cluster object name(MDS/Provider-1)
-
-```bash
-cpmiquerybin object "" network_objects "" |grep -A 12 cluster_members |grep Name | awk -F "(" '{printf $2}' | sed -e 's/)/|/g'
-cpmiquerybin attr "" network_objects "name='cluster_name'" -a cluster_members
-```
-
-### Print all members of a group(MDS/Provider-1)
-
-```bash
-cpmiquerybin object "" network_objects "name='group_name_goes_here'" | grep ":Name"
-```
-
-### Print CMA list of policy collections(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "" policies_collections "" -a __name__
-```
-
-### Print CMA policy names(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "" fw_policies "" -a __name__
-```
-
-### Print installable targets for a policy named standard(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "" policies_collections "name='Standar'" -a __name__,installable_targets
-```
-
-### Print IP for CLM name(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "mdsdb" network_objects "name='Cluster1'" -a __name__,ipaddr
-```
-
-### Print secondary CMA(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "" network_objects "(primary_management='false') & (management='true')" -a __name__
-```
-
-### List all MDSs(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "mdsdb" mdss "" -a __name__
-```
-
-### List CMAs(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "mdsdb" network_objects "management='true'" -a __name__,ipaddr
-```
-
-### List management/cma objects from cma env(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "" network_objects "management='true'" -a __name__,ipaddr 
-```
-
-### List primary MDS(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "mdsdb" mdss "primary='true'" -a __name__
-```
-
-### List services with 'Match for Any' ticked(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "" services "include_in_any='true'" -a __name__
-```
-
-### Query all objects for an ip address(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "" network_objects "ipaddr='<IP>'" -a __name__,ipaddr
-```
-
-### Query all Standalone Firewalls(MDS/Provider-1)
-
-```bash
-GATEWAYS=( `cpmiquerybin attr "" network_objects "(type='gateway') & (location='internal')" -a __name__ | tr '\n' ' '` )
-CLUSTERS=( `cpmiquerybin attr "" network_objects "(type='gateway_cluster') & (location='internal')" -a __name__ | tr '\n' ' '` )
-CLUSTER MEMBERS=( `cpmiquerybin attr "" network_objects "(type='cluster_member') | (type='gateway') & (location='internal')" -a __name__ | tr '\n'
-```
-
-### Query all Cluster Members(MDS/Provider-1)
-
-```bash
-cpmiquerybin attr "" network_objects "type='gateway'|type='cluster_member'|type='gateway_cluster'" -a __name__,ipaddr,svn_version_name,appliance_type
 ```
 
 ## Miscellaneous
@@ -965,18 +847,30 @@ $1	First argument
 !<command>	Expand most recent invocation of command <command>
 ```
 
-### Date of yesterday
+### Date of yesterday or today
 ```bash
+# Today
+date +%Y-%m-%d --date=1 days ago
+alias today=$(date +%Y-%m-%d --date="today")
+#or
 date -d@$(echo $(($(date +"%s")-86400))) +"%Y-%m-%d"
+
+# Yesterday
+date +%Y-%m-%d  --date=1 days ago
+yesterday=$(date +%Y-%m-%d --date="yesterday")
+#or
+date -d@$(echo $(($(date +"%s")-86400))) +"%Y-%m-%d"
+
 ```
+
+
 
 ### url encode STRING
 ```bash
 echo -n "STRING" | perl -MURI::Escape -wlne 'print uri_escape $_'
 ```
 
-### Emoji
-
+## The-End
 ```
-¯\_(ツ)_/¯
+# The end
 ```
