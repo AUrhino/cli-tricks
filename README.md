@@ -594,6 +594,17 @@ rpm -qa --qf "%{NAME}\n"
 ^\w{5,}$   # allows words of more than 4 characters.
 ^\w{5,10}$ # allows words of between 5 and 10 characters.
 ```
+### Regex to find an IP
+```bash
+grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' file.log
+```
+### Regex to find a valid IP address
+```bash
+grep -E -o "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)" file.log
+# -o, –only-matching
+# -E Use regular expressions
+```
+
 
 ## tcpdump
 
